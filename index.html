@@ -1,1 +1,170 @@
-blog
+<!DOCTYPE html>
+<html>
+<!--  -->
+
+<head>
+    <meta charset="UTF-8">
+    <title>点名系统</title>
+    <style type="text/css">
+        * {
+            font-family: "微软雅黑";
+            /*transition-duration: ;*/
+        }
+
+        h1,
+        h2 {
+            animation: changeColor 2s linear infinite;
+            animation-direction: alternate;
+        }
+
+        h1 {
+            background-color: yellowgreen;
+            color: white;
+            text-align: center;
+        }
+
+        #content>div {
+            float: left;
+            width: 100px;
+            height: 50px;
+            margin: 5px;
+            font-size: 20px;
+            line-height: 50px;
+            text-align: center;
+        }
+
+        .cell {
+            background-color: black;
+            color: white;
+        }
+
+        .current {
+            background-color: greenyellow;
+            color: blueviolet;
+        }
+
+        button {
+            display: inline-block;
+            height: 50px;
+            /*width: 50px;*/
+            background-color: yellowgreen;
+            color: white;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        select {
+            display: inline-block;
+            height: 30px;
+            width: 100px;
+            border: 1px solid yellowgreen;
+            background-color: blanchedalmond;
+            color: black;
+            font-size: 14px;
+            margin: 10px;
+        }
+
+        @keyframes changeColor {
+            from {
+                color: pink;
+            }
+            to {
+                color: blueviolet;
+            }
+        }
+
+        video {
+            height: 0;
+            width: 0;
+            opacity: 0;
+        }
+
+        #volumnType {
+            width: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>点名系统</h1>
+    <h2 id="selectTitle">被选中的小伙伴：</h2>
+    <video autoplay></video>
+    <button onclick="go()">开始</button>
+    <button onclick="pl()">播放所有选中的小朋友</button>
+    <button onclick="location.href=location.href">刷新</button> 时间：
+    <select id="sele">
+        <option value="10" selected>10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option value="40">40</option>
+        <option value="50" >50</option>
+    </select> 声音类型
+    <select id="volumnType">
+        <option value="2" selected>男生</option>
+        <option value="0">女生</option>
+        <option value="3">百度-逍遥小哥</option>
+        <option value="4">百度-丫丫小妹</option>
+    </select>
+    </button>
+
+    <div id="content"></div>
+</body>
+<script type="text/javascript">
+    var selectTitle = document.querySelector("#selectTitle");
+    var video = document.querySelector("video");
+    var Datas = "苏宇 利振光 李林彬 陈楚佳 叶博文 刘力搏 韦文耐 程明鹏 张沛锋 苏启兴 王嘉健 尹晶 郑泽键 李佳杰 杨光特 陈德立 莫广帅 邹婷 李承焕 林柏尧 陈业锋 郭瑞丹 陈鸿彬 林盈宏 曹继涛 邵明 蒋炎桦 周琪翔 胡坤 何俊 李钊 符蓝匀 罗水青 王原宏 蓝俊荣 刘永康 王松 温晓阳 温燕双 符永盛 李形鑫 何崇文 吴嘉俊 雷志威 曾绮晴 王舒华 曾福珍 黄晓朗 卢烽开 沈志恒 刘永胜 王铭杰 李海萍";
+
+    var chooseArr = [];
+    var arr = Datas.split(' ');
+    console.log(arr.length);
+
+    // 创建名单
+    window.onload = function () {
+        var html = "";
+        for (var i = 0; i < arr.length; i++) {
+            html += "<div class='cell'>" + arr[i] + "</div>";
+        }
+        document.getElementById("content").innerHTML = html;
+    }
+
+    function go() {
+        // 播放次数
+        var times = document.querySelector("#sele").value;
+        // 获取为未选中的数组
+        var arr = document.querySelectorAll("#content>div:not(.current)");
+        var timeId = setInterval(function () {
+            times--;
+            // 获取随机数  需要减去已经选中了的同学
+            var random = Math.round(Math.random() * (arr.length - 1));
+            var classmate = activeIndex(arr, random);
+            if (times == 0) {
+                clearInterval(timeId);
+                // 上榜
+                selectTitle.innerHTML += " " + classmate;
+                // 播放语音
+                var volumnType = document.querySelector("#volumnType").value;
+                video.src = 'http://tts.baidu.com/text2audio?idx=1&tex=' + classmate + '&cuid=baidu_speech_demo&cod=2&lan=zh&ctp=1&pdt=1&spd=3&per=' + volumnType + '&vol=9&pit=5';
+            }
+        }, 100);
+    }
+
+    // 排他 返回名字
+    function activeIndex(arr, index) {
+        for (var i = 0; i < arr.length; i++) {
+            var element = arr[i];
+            element.classList.remove("current");
+        }
+        arr[index].classList.add("current");
+        return arr[index].innerHTML;
+    }
+
+    function pl() {
+
+        // 播放语音
+        var volumnType = document.querySelector("#volumnType").value;
+        video.src = 'http://tts.baidu.com/text2audio?idx=1&tex=' + selectTitle.innerHTML + '&cuid=baidu_speech_demo&cod=2&lan=zh&ctp=1&pdt=1&spd=3&per=' + volumnType + '&vol=9&pit=5';
+    }
+</script>
+
+
+</html>
